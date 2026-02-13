@@ -139,3 +139,27 @@ def existe_usuario():
 
     conexao.close()
     return total > 0
+def atualizar_cliente(cliente_id, nome, telefone):
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute(
+        "UPDATE clientes SET nome = ?, telefone = ? WHERE id = ?",
+        (nome, telefone, cliente_id)
+    )
+
+    conexao.commit()
+    conexao.close()
+
+
+def excluir_cliente(cliente_id):
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute(
+        "DELETE FROM clientes WHERE id = ?",
+        (cliente_id,)
+    )
+
+    conexao.commit()
+    conexao.close()

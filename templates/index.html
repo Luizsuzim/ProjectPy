@@ -1,20 +1,23 @@
 {% extends "base.html" %}
-
-{% block title %}Início{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
 <div class="container">
-    <h1>Bem-vindo ao Space Atendimentos</h1>
+    <h1>Dashboard</h1>
 
-    <div class="dashboard">
+    <p class="descricao">
+        Visão geral do sistema 🚀
+    </p>
+
+    <div class="menu">
         <div class="card">
             <h2 id="totalClientes">0</h2>
             <p>Clientes cadastrados</p>
         </div>
 
         <div class="card">
-            <h2 id="abertos">0</h2>
-            <p>Atendimentos em aberto</p>
+            <h2 id="atendimentosAbertos">0</h2>
+            <p>Atendimentos abertos</p>
         </div>
     </div>
 </div>
@@ -25,8 +28,9 @@ async function carregarDashboard() {
     const dados = await res.json();
 
     document.getElementById("totalClientes").textContent = dados.total_clientes;
-    document.getElementById("abertos").textContent = dados.atendimentos_abertos;
+    document.getElementById("atendimentosAbertos").textContent = dados.atendimentos_abertos;
 }
+
 carregarDashboard();
 </script>
 {% endblock %}

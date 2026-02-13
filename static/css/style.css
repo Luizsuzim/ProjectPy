@@ -121,3 +121,22 @@ li {
     color: #007bff;
     font-size: 32px;
 }
+.menu {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.card {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    width: 200px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.card h2 {
+    font-size: 36px;
+    color: #007bff;
+}

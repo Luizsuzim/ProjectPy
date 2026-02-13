@@ -7,17 +7,20 @@
 </head>
 <body>
 
+{% if session.usuario_id %}
 <header class="header">
     <div class="header-container">
         <span class="logo">🚀 Space Atendimentos</span>
+
         <nav>
             <a href="/">Início</a>
-            <a href="/clientes">Clientes</a>
-            <a href="/atendimentos">Atendimentos</a>
-            <a href="/logout">Sair</a>
+            <a href="/clientes">👤 Clientes</a>
+            <a href="/atendimentos">🛠 Atendimentos</a>
+            <a href="/logout">🚪 Sair</a>
         </nav>
     </div>
 </header>
+{% endif %}
 
 <main>
     {% block content %}{% endblock %}

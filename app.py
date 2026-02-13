@@ -5,8 +5,11 @@ from database import (
     listar_clientes,
     inserir_atendimento,
     listar_atendimentos,
-    finalizar_atendimento
+    finalizar_atendimento,
+    atualizar_cliente,
+    excluir_cliente
 )
+
 from flask import session, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from database import buscar_usuario, criar_usuario
@@ -39,6 +42,7 @@ def index():
 
 
 @app.route("/clientes")
+@login_required
 def tela_clientes():
     return render_template("clientes.html")
 
@@ -104,6 +108,7 @@ def put_atendimento(id):
     return jsonify({"mensagem": "Atendimento finalizado"})
 
 @app.route("/atendimentos")
+@login_required
 def tela_atendimentos():
     return render_template("atendimentos.html")
 
@@ -140,6 +145,24 @@ def login():
 def logout():
     session.clear()
     return redirect("/login")
+
+@app.route("/api/clientes/<int:id>", methods=["PUT"])
+def put_cliente(id):
+    dados = request.get_json()
+
+    nome = dados.get("nome")
+    telefone = dados.get("telefone")
+
+    if not nome or not telefone:
+        return jsonify({"erro": "Dados obrigatórios"}), 400
+
+    atualizar_cliente(id, nome, telefone)
+    return jsonify({"mensagem": "Cliente atualizado"})
+
+@app.route("/api/clientes/<int:id>", methods=["DELETE"])
+def delete_cliente(id):
+    excluir_cliente(id)
+    return jsonify({"mensagem": "Cliente excluído"})
 
 if __name__ == "__main__":
     app.run(debug=True)

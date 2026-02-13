@@ -1,18 +1,12 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
 
-<div class="container">
-    <h1>🔐 Acesso ao Sistema</h1>
-    <p class="descricao">Entre com seu email e senha</p>
+{% block content %}
+<div class="container" style="max-width: 400px;">
+    <h1>Login</h1>
 
     {% if erro %}
-        <p style="color:red; text-align:center;">{{ erro }}</p>
+        <p style="color: red; margin-bottom: 10px;">{{ erro }}</p>
     {% endif %}
 
     <form method="POST">
@@ -21,6 +15,4 @@
         <button type="submit">Entrar</button>
     </form>
 </div>
-
-</body>
-</html>
+{% endblock %}

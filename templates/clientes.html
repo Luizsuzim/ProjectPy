@@ -16,6 +16,8 @@
 </div>
 
 <script>
+let clienteEditando = null;
+
 async function carregarClientes() {
     const resposta = await fetch("/api/clientes");
     const clientes = await resposta.json();
@@ -25,9 +27,31 @@ async function carregarClientes() {
 
     clientes.forEach(cliente => {
         const li = document.createElement("li");
-        li.textContent = `${cliente.nome} - ${cliente.telefone}`;
+
+        li.innerHTML = `
+            ${cliente.nome} - ${cliente.telefone}
+            <button onclick="editar(${cliente.id}, '${cliente.nome}', '${cliente.telefone}')">✏️</button>
+            <button onclick="excluir(${cliente.id})">🗑️</button>
+        `;
+
         lista.appendChild(li);
     });
+}
+
+function editar(id, nome, telefone) {
+    document.getElementById("nome").value = nome;
+    document.getElementById("telefone").value = telefone;
+    clienteEditando = id;
+}
+
+async function excluir(id) {
+    if (!confirm("Deseja excluir este cliente?")) return;
+
+    await fetch(`/api/clientes/${id}`, {
+        method: "DELETE"
+    });
+
+    carregarClientes();
 }
 
 document.getElementById("formCliente").addEventListener("submit", async (e) => {
@@ -36,11 +60,21 @@ document.getElementById("formCliente").addEventListener("submit", async (e) => {
     const nome = document.getElementById("nome").value;
     const telefone = document.getElementById("telefone").value;
 
-    await fetch("/api/clientes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nome, telefone })
-    });
+    if (clienteEditando) {
+        await fetch(`/api/clientes/${clienteEditando}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nome, telefone })
+        });
+
+        clienteEditando = null;
+    } else {
+        await fetch("/api/clientes", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nome, telefone })
+        });
+    }
 
     e.target.reset();
     carregarClientes();
