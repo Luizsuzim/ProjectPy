@@ -2,14 +2,49 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Space Atendimentos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>Bem-vindo. Space Atendimentos.</h1>
-    <ul>
-        <li><a href="/atendimentos">Atendimentos</a></li>
-        <li><a href="/clientes">Clientes</a></li>
-    </ul>
+<header class="header">
+    <div class="header-container">
+        <span class="logo">🚀 Space Atendimentos</span>
+
+        <nav>
+            <a href="/">Início</a>
+            <a href="/clientes">👤 Clientes</a>
+            <a href="/atendimentos">🛠 Atendimentos</a>
+        </nav>
+    </div>
+</header>
+<div class="dashboard">
+    <div class="card">
+        <h2 id="totalClientes">0</h2>
+        <p>Clientes cadastrados</p>
+    </div>
+
+    <div class="card">
+        <h2 id="abertos">0</h2>
+        <p>Atendimentos em aberto</p>
+    </div>
+</div>
+<div class="container">
+    <h1>🚀 Space Atendimentos</h1>
+
+    <p class="descricao">
+        Sistema simples para gerenciamento de clientes e atendimentos.
+    </p>
+</div>
+<script>
+async function carregarDashboard() {
+    const res = await fetch("/api/dashboard");
+    const dados = await res.json();
+
+    document.getElementById("totalClientes").textContent = dados.total_clientes;
+    document.getElementById("abertos").textContent = dados.atendimentos_abertos;
+}
+
+carregarDashboard();
+</script>
 </body>
 </html>

@@ -3,55 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <title>Clientes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+<header class="header">
+    <div class="header-container">
+        <span class="logo">🚀 Space Atendimentos</span>
 
-    <h1>Cadastro de Clientes</h1>
+        <nav>
+            <a href="/">Início</a>
+            <a href="/clientes">👤 Clientes</a>
+            <a href="/atendimentos">🛠 Atendimentos</a>
+        </nav>
+    </div>
+</header>
+    <div class="container">
+        <h1>Clientes</h1>
 
-    <form id="formCliente">
-        <input type="text" id="nome" placeholder="Nome" required>
-        <input type="text" id="telefone" placeholder="Telefone" required>
-        <button type="submit">Cadastrar</button>
-    </form>
+        <form id="formCliente">
+            <input type="text" id="nome" placeholder="Nome" required>
+            <input type="text" id="telefone" placeholder="Telefone" required>
+            <button type="submit">Cadastrar</button>
+        </form>
 
-    <h2>Lista de Clientes</h2>
-    <ul id="listaClientes"></ul>
+        <ul id="listaClientes"></ul>
+    </div>
 
-    <script>
-        async function carregarClientes() {
-            const resposta = await fetch("/api/clientes");
-            const clientes = await resposta.json();
+<script>
+    async function carregarClientes() {
+        const resposta = await fetch("/api/clientes");
+        const clientes = await resposta.json();
 
-            const lista = document.getElementById("listaClientes");
-            lista.innerHTML = "";
+        const lista = document.getElementById("listaClientes");
+        lista.innerHTML = "";
 
-            clientes.forEach(cliente => {
-                const li = document.createElement("li");
-                li.textContent = `${cliente.nome} - ${cliente.telefone}`;
-                lista.appendChild(li);
-            });
-        }
+        clientes.forEach(cliente => {
+            const li = document.createElement("li");
+            li.textContent = `${cliente.nome} - ${cliente.telefone}`;
+            lista.appendChild(li);
+        });
+    }
 
-        document.getElementById("formCliente").addEventListener("submit", async (e) => {
-            e.preventDefault();
+    document.getElementById("formCliente").addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-            const nome = document.getElementById("nome").value;
-            const telefone = document.getElementById("telefone").value;
+        const nome = document.getElementById("nome").value;
+        const telefone = document.getElementById("telefone").value;
 
-            await fetch("/api/clientes", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ nome, telefone })
-            });
-
-            document.getElementById("formCliente").reset();
-            carregarClientes();
+        await fetch("/api/clientes", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ nome, telefone })
         });
 
-        carregarClientes();
-    </script>
+        document.getElementById("formCliente").reset();
+            carregarClientes();
+    });
 
+    carregarClientes();
+</script>
 </body>
 </html>

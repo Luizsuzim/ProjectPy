@@ -3,18 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title>Atendimentos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+<header class="header">
+    <div class="header-container">
+        <span class="logo">🚀 Space Atendimentos</span>
 
-<h1>Atendimentos</h1>
+        <nav>
+            <a href="/">Início</a>
+            <a href="/clientes">👤 Clientes</a>
+            <a href="/atendimentos">🛠 Atendimentos</a>
+        </nav>
+    </div>
+</header>
+<div class="container">
+    <h1>Atendimentos</h1>
 
-<form id="formAtendimento">
-    <select id="cliente"></select>
-    <input type="text" id="descricao" placeholder="Descrição" required>
-    <button type="submit">Criar Atendimento</button>
-</form>
+    <form id="formAtendimento">
+        <select id="cliente"></select>
+        <input type="text" id="descricao" placeholder="Descrição" required>
+        <button type="submit">Abrir Atendimento</button>
+    </form>
 
-<ul id="listaAtendimentos"></ul>
+    <ul id="listaAtendimentos"></ul>
+</div>
 
 <script>
 async function carregarClientes() {
@@ -74,6 +87,5 @@ document.getElementById("formAtendimento").addEventListener("submit", async e =>
 carregarClientes();
 carregarAtendimentos();
 </script>
-
 </body>
 </html>

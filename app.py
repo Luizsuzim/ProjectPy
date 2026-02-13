@@ -87,6 +87,18 @@ def put_atendimento(id):
 def tela_atendimentos():
     return render_template("atendimentos.html")
 
+@app.route("/api/dashboard")
+def dashboard():
+    clientes = listar_clientes()
+    atendimentos = listar_atendimentos()
+
+    abertos = [a for a in atendimentos if a[3] == "Aberto"]
+
+    return jsonify({
+        "total_clientes": len(clientes),
+        "atendimentos_abertos": len(abertos)
+    })
+
 
 if __name__ == "__main__":
     app.run(debug=True)
