@@ -9,13 +9,12 @@ def criar_tabelas():
     cursor.execute("""CREATE TABLE IF NOT EXISTS clientes (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                    nome TEXT NOT NULL,
-                   telefone TEXT NOT NULL,
-                   email TEXT NOT NULL)""")
+                   telefone TEXT NOT NULL
+                   )""")
     
     cursor.execute("""CREATE TABLE IF NOT EXISTS atendimentos (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                    cliente_id INTEGER NOT NULL,
-                   data TEXT NOT NULL,
                    descricao TEXT NOT NULL,
                    status TEXT NOT NULL,
                    FOREIGN KEY (cliente_id) REFERENCES clientes (id))""")
@@ -44,3 +43,43 @@ def listar_clientes():
 
     conexao.close()
     return clientes
+
+def inserir_atendimento(cliente_id, descricao):
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute(
+        "INSERT INTO atendimentos (cliente_id, descricao, status) VALUES (?, ?, ?)",
+        (cliente_id, descricao, "Aberto")
+    )
+
+    conexao.commit()
+    conexao.close()
+
+
+def listar_atendimentos():
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        SELECT atendimentos.id, clientes.nome, atendimentos.descricao, atendimentos.status
+        FROM atendimentos
+        JOIN clientes ON clientes.id = atendimentos.cliente_id
+    """)
+
+    dados = cursor.fetchall()
+    conexao.close()
+    return dados
+
+
+def finalizar_atendimento(atendimento_id):
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute(
+        "UPDATE atendimentos SET status = 'Finalizado' WHERE id = ?",
+        (atendimento_id,)
+    )
+
+    conexao.commit()
+    conexao.close()

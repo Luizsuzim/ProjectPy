@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Atendimentos</title>
+</head>
+<body>
+
+<h1>Atendimentos</h1>
+
+<form id="formAtendimento">
+    <select id="cliente"></select>
+    <input type="text" id="descricao" placeholder="Descrição" required>
+    <button type="submit">Criar Atendimento</button>
+</form>
+
+<ul id="listaAtendimentos"></ul>
+
+<script>
+async function carregarClientes() {
+    const res = await fetch("/api/clientes");
+    const clientes = await res.json();
+
+    const select = document.getElementById("cliente");
+    select.innerHTML = "";
+
+    clientes.forEach(c => {
+        const option = document.createElement("option");
+        option.value = c.id;
+        option.textContent = c.nome;
+        select.appendChild(option);
+    });
+}
+
+async function carregarAtendimentos() {
+    const res = await fetch("/api/atendimentos");
+    const atendimentos = await res.json();
+
+    const lista = document.getElementById("listaAtendimentos");
+    lista.innerHTML = "";
+
+    atendimentos.forEach(a => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+            <strong>${a.cliente}</strong> - ${a.descricao}
+            [${a.status}]
+            ${a.status === "Aberto" ? `<button onclick="finalizar(${a.id})">Finalizar</button>` : ""}
+        `;
+        lista.appendChild(li);
+    });
+}
+
+async function finalizar(id) {
+    await fetch(`/api/atendimentos/${id}`, { method: "PUT" });
+    carregarAtendimentos();
+}
+
+document.getElementById("formAtendimento").addEventListener("submit", async e => {
+    e.preventDefault();
+
+    const cliente_id = document.getElementById("cliente").value;
+    const descricao = document.getElementById("descricao").value;
+
+    await fetch("/api/atendimentos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cliente_id, descricao })
+    });
+
+    e.target.reset();
+    carregarAtendimentos();
+});
+
+carregarClientes();
+carregarAtendimentos();
+</script>
+
+</body>
+</html>

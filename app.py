@@ -1,5 +1,13 @@
 from flask import Flask, request, jsonify, render_template
-from database import criar_tabelas, inserir_cliente, listar_clientes
+from database import (
+    criar_tabelas,
+    inserir_cliente,
+    listar_clientes,
+    inserir_atendimento,
+    listar_atendimentos,
+    finalizar_atendimento
+)
+
 
 app = Flask(__name__)
 
@@ -41,6 +49,43 @@ def post_cliente():
 
     inserir_cliente(nome, telefone)
     return jsonify({"mensagem": "Cliente cadastrado com sucesso"}), 201
+
+@app.route("/api/atendimentos", methods=["GET"])
+def get_atendimentos():
+    atendimentos = listar_atendimentos()
+
+    resultado = []
+    for a in atendimentos:
+        resultado.append({
+            "id": a[0],
+            "cliente": a[1],
+            "descricao": a[2],
+            "status": a[3]
+        })
+
+    return jsonify(resultado)
+
+@app.route("/api/atendimentos", methods=["POST"])
+def post_atendimento():
+    dados = request.get_json()
+
+    cliente_id = dados.get("cliente_id")
+    descricao = dados.get("descricao")
+
+    if not cliente_id or not descricao:
+        return jsonify({"erro": "Dados obrigatórios"}), 400
+
+    inserir_atendimento(cliente_id, descricao)
+    return jsonify({"mensagem": "Atendimento criado"}), 201
+
+@app.route("/api/atendimentos/<int:id>", methods=["PUT"])
+def put_atendimento(id):
+    finalizar_atendimento(id)
+    return jsonify({"mensagem": "Atendimento finalizado"})
+
+@app.route("/atendimentos")
+def tela_atendimentos():
+    return render_template("atendimentos.html")
 
 
 if __name__ == "__main__":
