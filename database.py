@@ -1,25 +1,43 @@
 import sqlite3
 
 def conectar():
-    return sqlite3.connect('database.db')
+    conn = sqlite3.connect("database.db")
+    conn.execute("PRAGMA foreign_keys = ON")
+    return conn
+
 def criar_tabelas():
     conexao = conectar()
     cursor = conexao.cursor()
-    
-    cursor.execute("""CREATE TABLE IF NOT EXISTS clientes (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                   nome TEXT NOT NULL,
-                   telefone TEXT NOT NULL
-                   )""")
-    
-    cursor.execute("""CREATE TABLE IF NOT EXISTS atendimentos (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                   cliente_id INTEGER NOT NULL,
-                   descricao TEXT NOT NULL,
-                   status TEXT NOT NULL,
-                   FOREIGN KEY (cliente_id) REFERENCES clientes (id))""")
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS clientes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL,
+            telefone TEXT NOT NULL
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS atendimentos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            cliente_id INTEGER NOT NULL,
+            descricao TEXT NOT NULL,
+            status TEXT NOT NULL,
+            FOREIGN KEY (cliente_id) REFERENCES clientes (id)
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT UNIQUE NOT NULL,
+            senha TEXT NOT NULL
+        )
+    """)
+
     conexao.commit()
     conexao.close()
+
 
 def inserir_cliente(nome, telefone):
     conexao = conectar()
@@ -43,6 +61,7 @@ def listar_clientes():
 
     conexao.close()
     return clientes
+
 
 def inserir_atendimento(cliente_id, descricao):
     conexao = conectar()
@@ -83,3 +102,40 @@ def finalizar_atendimento(atendimento_id):
 
     conexao.commit()
     conexao.close()
+
+
+def criar_usuario(email, senha_hash):
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute(
+        "INSERT INTO usuarios (email, senha) VALUES (?, ?)",
+        (email, senha_hash)
+    )
+
+    conexao.commit()
+    conexao.close()
+
+
+def buscar_usuario(email):
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute(
+        "SELECT id, email, senha FROM usuarios WHERE email = ?",
+        (email,)
+    )
+
+    usuario = cursor.fetchone()
+    conexao.close()
+    return usuario
+
+def existe_usuario():
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM usuarios")
+    total = cursor.fetchone()[0]
+
+    conexao.close()
+    return total > 0

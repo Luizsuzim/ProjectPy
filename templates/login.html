@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>🔐 Acesso ao Sistema</h1>
+    <p class="descricao">Entre com seu email e senha</p>
+
+    {% if erro %}
+        <p style="color:red; text-align:center;">{{ erro }}</p>
+    {% endif %}
+
+    <form method="POST">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="senha" placeholder="Senha" required>
+        <button type="submit">Entrar</button>
+    </form>
+</div>
+
+</body>
+</html>

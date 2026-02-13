@@ -7,16 +7,36 @@ from database import (
     listar_atendimentos,
     finalizar_atendimento
 )
+from flask import session, redirect, url_for
+from werkzeug.security import generate_password_hash, check_password_hash
+from database import buscar_usuario, criar_usuario
+from functools import wraps
+from database import existe_usuario
 
 
 app = Flask(__name__)
 
+def login_required(f):
+    @wraps(f)
+    def decorada(*args, **kwargs):
+        if "usuario_id" not in session:
+            return redirect("/login")
+        return f(*args, **kwargs)
+    return decorada
+
+
 criar_tabelas()
 
+if not existe_usuario():
+    senha_hash = generate_password_hash("123456")
+    criar_usuario("luiz@spacesc.com.br", senha_hash)
+    print("Usuário admin criado: luiz@spacesc.com.br / 123456")
 
 @app.route("/")
+@login_required
 def index():
     return render_template("index.html")
+
 
 @app.route("/clientes")
 def tela_clientes():
@@ -99,6 +119,27 @@ def dashboard():
         "atendimentos_abertos": len(abertos)
     })
 
+app.secret_key = "chave-super-secreta"
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form["email"]
+        senha = request.form["senha"]
+
+        usuario = buscar_usuario(email)
+
+        if usuario and check_password_hash(usuario[2], senha):
+            session["usuario_id"] = usuario[0]
+            return redirect("/")
+        
+        return render_template("login.html", erro="Login inválido")
+
+    return render_template("login.html")
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
 
 if __name__ == "__main__":
     app.run(debug=True)

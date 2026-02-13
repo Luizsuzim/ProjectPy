@@ -1,40 +1,24 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Space Atendimentos</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-<header class="header">
-    <div class="header-container">
-        <span class="logo">🚀 Space Atendimentos</span>
+{% extends "base.html" %}
 
-        <nav>
-            <a href="/">Início</a>
-            <a href="/clientes">👤 Clientes</a>
-            <a href="/atendimentos">🛠 Atendimentos</a>
-        </nav>
-    </div>
-</header>
-<div class="dashboard">
-    <div class="card">
-        <h2 id="totalClientes">0</h2>
-        <p>Clientes cadastrados</p>
-    </div>
+{% block title %}Início{% endblock %}
 
-    <div class="card">
-        <h2 id="abertos">0</h2>
-        <p>Atendimentos em aberto</p>
-    </div>
-</div>
+{% block content %}
 <div class="container">
-    <h1>🚀 Space Atendimentos</h1>
+    <h1>Bem-vindo ao Space Atendimentos</h1>
 
-    <p class="descricao">
-        Sistema simples para gerenciamento de clientes e atendimentos.
-    </p>
+    <div class="dashboard">
+        <div class="card">
+            <h2 id="totalClientes">0</h2>
+            <p>Clientes cadastrados</p>
+        </div>
+
+        <div class="card">
+            <h2 id="abertos">0</h2>
+            <p>Atendimentos em aberto</p>
+        </div>
+    </div>
 </div>
+
 <script>
 async function carregarDashboard() {
     const res = await fetch("/api/dashboard");
@@ -43,8 +27,6 @@ async function carregarDashboard() {
     document.getElementById("totalClientes").textContent = dados.total_clientes;
     document.getElementById("abertos").textContent = dados.atendimentos_abertos;
 }
-
 carregarDashboard();
 </script>
-</body>
-</html>
+{% endblock %}

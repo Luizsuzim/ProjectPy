@@ -1,22 +1,8 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Atendimentos</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-<header class="header">
-    <div class="header-container">
-        <span class="logo">🚀 Space Atendimentos</span>
+{% extends "base.html" %}
 
-        <nav>
-            <a href="/">Início</a>
-            <a href="/clientes">👤 Clientes</a>
-            <a href="/atendimentos">🛠 Atendimentos</a>
-        </nav>
-    </div>
-</header>
+{% block title %}Atendimentos{% endblock %}
+
+{% block content %}
 <div class="container">
     <h1>Atendimentos</h1>
 
@@ -57,7 +43,9 @@ async function carregarAtendimentos() {
         li.innerHTML = `
             <strong>${a.cliente}</strong> - ${a.descricao}
             [${a.status}]
-            ${a.status === "Aberto" ? `<button onclick="finalizar(${a.id})">Finalizar</button>` : ""}
+            ${a.status === "Aberto"
+                ? `<button onclick="finalizar(${a.id})">Finalizar</button>`
+                : ""}
         `;
         lista.appendChild(li);
     });
@@ -74,6 +62,11 @@ document.getElementById("formAtendimento").addEventListener("submit", async e =>
     const cliente_id = document.getElementById("cliente").value;
     const descricao = document.getElementById("descricao").value;
 
+    if (!cliente_id) {
+        alert("Selecione um cliente");
+        return;
+    }
+
     await fetch("/api/atendimentos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -87,5 +80,4 @@ document.getElementById("formAtendimento").addEventListener("submit", async e =>
 carregarClientes();
 carregarAtendimentos();
 </script>
-</body>
-</html>
+{% endblock %}
