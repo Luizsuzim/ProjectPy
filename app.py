@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from database import criar_tabelas, inserir_cliente, listar_clientes
 
 app = Flask(__name__)
@@ -8,8 +8,11 @@ criar_tabelas()
 
 @app.route("/")
 def index():
-    return "API Sistema de Atendimentos rodando!"
+    return render_template("index.html")
 
+@app.route("/clientes")
+def tela_clientes():
+    return render_template("clientes.html")
 
 @app.route("/api/clientes", methods=["GET"])
 def get_clientes():
